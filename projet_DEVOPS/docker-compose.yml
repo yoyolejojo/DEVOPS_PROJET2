@@ -77,7 +77,77 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
+  product-consumer:
+    container_name: product-consumer
+    build:
+      context: ./product-consumer
+      dockerfile: Dockerfile
+    ports:
+      - '9093:9093'
+    networks:
+      - strapi
+    depends_on:
+      - kafka
 
+  product-producer:
+    container_name: product-producer
+    build:
+      context: ./product-producer
+      dockerfile: Dockerfile
+    ports:
+      - '9094:9094'
+    networks:
+      - strapi
+    depends_on:
+      - kafka
+    
+  event-consumer:
+    container_name: event-consumer
+    build:
+      context: ./event-consumer
+      dockerfile: Dockerfile
+    ports:
+      - '9095:9095'
+    networks:
+      - strapi
+    depends_on:
+      - kafka
+
+  event-producer:
+    container_name: event-producer
+    build:
+      context: ./event-producer
+      dockerfile: Dockerfile
+    ports:
+      - '9096:9096'
+    networks:
+      - strapi
+    depends_on:
+      - kafka
+
+  stock-consumer:
+    container_name: stock-consumer
+    build:
+      context: ./stock-consumer
+      dockerfile: Dockerfile
+    ports:
+      - '9097:9097'
+    networks:
+      - strapi
+    depends_on:
+      - kafka
+
+  stock-producer:
+    container_name: stock-producer
+    build:
+      context: ./stock-producer
+      dockerfile: Dockerfile
+    ports:
+      - '9098:9098'
+    networks:
+      - strapi
+    depends_on:
+      - kafka
 
 volumes:
   strapi-data:

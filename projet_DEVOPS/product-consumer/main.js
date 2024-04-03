@@ -2,10 +2,10 @@ import { Kafka } from 'kafkajs'
 const BROKER_1 = process.env.BROKER_1 || 'localhost:9092'
 const BROKER_2 = process.env.BROKER_2 || 'localhost:9092'
 const BROKER_3 = process.env.BROKER_3 || 'localhost:9092'
-const TOPIC = process.env.TOPIC || 'product'
+const TOPIC = process.env.TOPIC || 'product-test'
 const STRAPI_URL= process.env.STRAPI_URL || "http://localhost:1337"
 const TOKEN = process.env.TOKEN || "oMp8twsO5jlasLGiYELO7g"
-const ERROR_TOPIC = process.env.ERROR_TOPIC || 'errors'
+const ERROR_TOPIC = process.env.ERROR_TOPIC || 'error-test'
 const MAX_RETRY = 5; // Maximum number of retries for processing a message
 
 const log = (...str) => console.log(`${new Date().toUTCString()}: `, ...str)

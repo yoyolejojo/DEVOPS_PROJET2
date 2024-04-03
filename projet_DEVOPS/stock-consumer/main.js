@@ -3,10 +3,10 @@ const BROKER_1 = process.env.BROKER_1 || 'localhost:9092'
 const BROKER_2 = process.env.BROKER_2 || 'localhost:9092'
 const BROKER_3 = process.env.BROKER_3 || 'localhost:9092'
 const TOKEN = process.env.STRAPI_TOKEN || ''
-const STRAPI_URL = process.env.STRAPI_URL || 'http://localhost:8080'
-const TOPIC = process.env.TOPIC || 'stock'
+const STRAPI_URL = process.env.STRAPI_URL || 'http://localhost:1337'
+const TOPIC = process.env.TOPIC || 'stock-test'
 const BEGINNING = process.env.BEGINNING == 'true' || 'false'
-const ERROR_TOPIC = process.env.ERROR_TOPIC || 'errors'
+const ERROR_TOPIC = process.env.ERROR_TOPIC || 'error-test'
 
 const log = (...str) => console.log(`${new Date().toUTCString()}: `, ...str)
 
@@ -31,7 +31,7 @@ const consume = async () => {
         log(stock, await applyStockChange(stock))
         log('created', strProduct)
       } catch (error) {
-        console.error(error)
+        console.error(error)  
         if (ERROR_TOPIC)
           producer.send({
             topic: ERROR_TOPIC,
