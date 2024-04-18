@@ -107,16 +107,16 @@ services:
       BROKER_2: kafka:9092
       BROKER_3: kafka:9092
       STRAPI_TOKEN: oMp8twsO5jlasLGiYELO7g
-      STRAPI_URL: http://localhost:1337
-      TOPIC: product-test
+      STRAPI_URL: http://strapi:1337
+      TOPIC: products
       BEGINNING: "false"
-      ERROR_TOPIC: error-test 
+      ERROR_TOPIC: errors 
     ports:
       - '9094:9094'
     networks:
       - strapi
     depends_on:
-      - kafka
+      - strapi
 
   product-producer:
     image: arthurescriou/product-producer:1.0.0
@@ -126,10 +126,10 @@ services:
       BROKER_2: kafka:9092
       BROKER_3: kafka:9092
       STRAPI_TOKEN: oMp8twsO5jlasLGiYELO7g
-      STRAPI_URL: http://localhost:1337
-      TOPIC: product-test
+      STRAPI_URL: http://strapi:1337
+      TOPIC: products
       BEGINNING: "false"
-      ERROR_TOPIC: error-test 
+      ERROR_TOPIC: errors
       FILE_NAME: /data/products.csv
     ports:
       - '9095:9095'
@@ -138,7 +138,7 @@ services:
     volumes:
       - ./products.csv:/data/products.csv
     depends_on:
-      - kafka
+      - strapi
 
 
   event-consumer:
@@ -149,65 +149,77 @@ services:
       BROKER_2: kafka:9092
       BROKER_3: kafka:9092
       STRAPI_TOKEN: oMp8twsO5jlasLGiYELO7g
-      STRAPI_URL: http://localhost:1337
-      TOPIC: event-test
+      STRAPI_URL: http://strapi:1337
+      TOPIC: events
       BEGINNING: "false"
-      ERROR_TOPIC: error-test 
+      ERROR_TOPIC: errors
     ports:
       - '9096:9096'
     networks:
       - strapi
     depends_on:
+      - strapi
+
+
+  event-producer:
+    image: arthurescriou/event-producer:1.0.3
+    container_name: event-producer
+    environment:
+      BROKER_1: kafka:9092
+      BROKER_2: kafka:9092
+      BROKER_3: kafka:9092
+      TOPIC: events
+      ERROR_TOPIC: errors
+      FILE_NAME: /data/events.csv
+    ports:
+      - '9097:9097'
+    networks:
+      - strapi
+    volumes:
+      - ./events.csv:/data/events.csv
+    depends_on:
       - kafka
 
-
-  # event-producer:
-  #   container_name: event-producer
-  #   build:
-  #     context: ./event-producer
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - '9092:9092'
-  #   networks:
-  #     - strapi
-  #   depends_on:
-  #     - kafka
-
-  # stock-consumer:
-  #   image: arthurescriou/stock-consumer:1.0.0
-  #   container_name: stock-consumer
-  #   environment:
-  #     BROKER_1: kafka:9092
-  #     BROKER_2: kafka:9092
-  #     BROKER_3: kafka:9092
-  #     STRAPI_TOKEN: oMp8twsO5jlasLGiYELO7g
-  #     STRAPI_URL: http://localhost:1337
-  #     TOPIC: stock-test
-  #     BEGINNING: "false"
-  #     ERROR_TOPIC: error-test 
-  #   ports:
-  #     - '9097:9097'
-  #   networks:
-  #     - strapi
-  #   depends_on:
-  #     - kafka
+  stock-consumer:
+    # image: arthurescriou/stock-consumer:1.0.0
+    build: ./stock-consumer
+    image: arthurescriou/stock-consumer:1.0.0
+    container_name: stock-consumer
+    environment:
+      BROKER_1: kafka:9092
+      BROKER_2: kafka:9092
+      BROKER_3: kafka:9092
+      STRAPI_TOKEN: oMp8twsO5jlasLGiYELO7g
+      STRAPI_URL: http://strapi:1337
+      TOPIC: stocks
+      BEGINNING: "false"
+      ERROR_TOPIC: errors
+    ports:
+      - '9098:9098'
+    networks:
+      - strapi
+    depends_on:
+      - strapi
 
 
-  # stock-producer:
-  #   image: arthurescriou/stock-producer:1.0.0
-  #   container_name: stock-producer
-  #   environment:
-  #     BROKER_1: kafka:9092
-  #     BROKER_2: kafka:9092
-  #     BROKER_3: kafka:9092
-  #     TOPIC: stock-test
-  #     ERROR_TOPIC: error-test 
-  #   ports:
-  #     - '9098:9098'
-  #   networks:
-  #     - strapi
-  #   depends_on:
-  #     - kafka
+  stock-producer:
+    image: arthurescriou/stock-producer:1.0.1 
+    container_name: stock-producer
+    environment:
+      BROKER_1: kafka:9092
+      BROKER_2: kafka:9092
+      BROKER_3: kafka:9092
+      TOPIC: stocks
+      ERROR_TOPIC: errors
+      FILE_NAME: /data/stocks.csv
+    ports:
+      - '9099:9099'
+    networks:
+      - strapi
+    volumes:
+      - ./stocks.csv:/data/stocks.csv
+    depends_on:
+      - kafka
 
 
 volumes:
